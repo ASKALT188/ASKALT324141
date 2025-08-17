@@ -1,0 +1,429 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>TikTok Downloader بدون علامة مائية | ASKALT</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <style>
+    :root {
+      --primary: #6a11cb;
+      --secondary: #2575fc;
+      --accent: #ff4b2b;
+      --dark: #1a1a2e;
+      --light: #f8f9fa;
+    }
+    
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: 'Tahoma', 'Segoe UI', sans-serif;
+    }
+    
+    body {
+      background: linear-gradient(135deg, var(--primary), var(--secondary));
+      min-height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      padding: 20px;
+      color: var(--dark);
+    }
+    
+    .container {
+      width: 100%;
+      max-width: 500px;
+      perspective: 1000px;
+    }
+    
+    .card {
+      background: rgba(255, 255, 255, 0.95);
+      border-radius: 25px;
+      padding: 30px;
+      box-shadow: 0 15px 35px rgba(0, 0, 0, 0.2);
+      transform-style: preserve-3d;
+      transition: all 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+      position: relative;
+      overflow: hidden;
+      backdrop-filter: blur(10px);
+      border: 1px solid rgba(255, 255, 255, 0.2);
+    }
+    
+    .card:hover {
+      transform: translateY(-10px) rotateX(5deg);
+      box-shadow: 0 25px 50px rgba(0, 0, 0, 0.3);
+    }
+    
+    .card::before {
+      content: '';
+      position: absolute;
+      top: -50%;
+      left: -50%;
+      width: 200%;
+      height: 200%;
+      background: linear-gradient(
+        45deg,
+        transparent,
+        rgba(255, 255, 255, 0.1),
+        transparent
+      );
+      transform: rotate(45deg);
+      animation: shine 3s infinite;
+    }
+    
+    @keyframes shine {
+      0% { transform: translateX(-100%) rotate(45deg); }
+      100% { transform: translateX(100%) rotate(45deg); }
+    }
+    
+    .logo {
+      text-align: center;
+      margin-bottom: 20px;
+      position: relative;
+    }
+    
+    .logo h1 {
+      font-size: 28px;
+      background: linear-gradient(to right, var(--primary), var(--secondary));
+      -webkit-background-clip: text;
+      background-clip: text;
+      color: transparent;
+      font-weight: 800;
+      letter-spacing: -1px;
+    }
+    
+    .logo .brand {
+      font-size: 12px;
+      color: var(--accent);
+      font-weight: bold;
+      margin-top: -5px;
+      letter-spacing: 1px;
+    }
+    
+    h2 {
+      text-align: center;
+      margin-bottom: 25px;
+      color: var(--dark);
+      font-size: 22px;
+      position: relative;
+      display: inline-block;
+      width: 100%;
+    }
+    
+    h2::after {
+      content: '';
+      position: absolute;
+      bottom: -10px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 50px;
+      height: 3px;
+      background: linear-gradient(to right, var(--primary), var(--secondary));
+      border-radius: 3px;
+    }
+    
+    .input-group {
+      position: relative;
+      margin-bottom: 25px;
+    }
+    
+    input {
+      width: 100%;
+      padding: 15px 20px;
+      border: 2px solid rgba(106, 17, 203, 0.2);
+      border-radius: 12px;
+      font-size: 16px;
+      transition: all 0.3s;
+      background: rgba(255, 255, 255, 0.8);
+      color: var(--dark);
+    }
+    
+    input:focus {
+      border-color: var(--primary);
+      box-shadow: 0 0 0 3px rgba(106, 17, 203, 0.1);
+      outline: none;
+    }
+    
+    input::placeholder {
+      color: #999;
+    }
+    
+    button {
+      width: 100%;
+      padding: 15px;
+      background: linear-gradient(to right, var(--primary), var(--secondary));
+      color: white;
+      border: none;
+      border-radius: 12px;
+      font-size: 16px;
+      font-weight: bold;
+      cursor: pointer;
+      transition: all 0.3s;
+      box-shadow: 0 5px 15px rgba(106, 17, 203, 0.3);
+      position: relative;
+      overflow: hidden;
+    }
+    
+    button:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 8px 20px rgba(106, 17, 203, 0.4);
+    }
+    
+    button:active {
+      transform: translateY(1px);
+    }
+    
+    button::after {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(
+        45deg,
+        transparent,
+        rgba(255, 255, 255, 0.2),
+        transparent
+      );
+      transform: translateX(-100%);
+      transition: 0.5s;
+    }
+    
+    button:hover::after {
+      transform: translateX(100%);
+    }
+    
+    .result {
+      margin-top: 25px;
+      padding: 20px;
+      border-radius: 12px;
+      background: rgba(248, 249, 250, 0.7);
+      text-align: center;
+      transition: all 0.3s;
+      border: 1px dashed rgba(106, 17, 203, 0.3);
+    }
+    
+    .result.success {
+      background: rgba(76, 175, 80, 0.1);
+      border-color: rgba(76, 175, 80, 0.3);
+    }
+    
+    .result.error {
+      background: rgba(255, 76, 48, 0.1);
+      border-color: rgba(255, 76, 48, 0.3);
+    }
+    
+    .download-btn {
+      display: inline-block;
+      margin-top: 15px;
+      padding: 12px 25px;
+      background: linear-gradient(to right, #4CAF50, #2E7D32);
+      color: white;
+      border-radius: 8px;
+      text-decoration: none;
+      font-weight: bold;
+      transition: all 0.3s;
+      box-shadow: 0 4px 10px rgba(76, 175, 80, 0.3);
+    }
+    
+    .download-btn:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 6px 15px rgba(76, 175, 80, 0.4);
+    }
+    
+    .social-links {
+      display: flex;
+      justify-content: center;
+      gap: 15px;
+      margin-top: 30px;
+    }
+    
+    .social-links a {
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: white;
+      font-size: 18px;
+      transition: all 0.3s;
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    }
+    
+    .social-links a:hover {
+      transform: translateY(-5px) scale(1.1);
+    }
+    
+    .facebook { background: #3b5998; }
+    .twitter { background: #1da1f2; }
+    .instagram { background: linear-gradient(45deg, #f09433, #e6683c, #dc2743, #cc2366, #bc1888); }
+    .youtube { background: #ff0000; }
+    
+    .footer {
+      text-align: center;
+      margin-top: 25px;
+      font-size: 12px;
+      color: #666;
+    }
+    
+    .footer a {
+      color: var(--primary);
+      text-decoration: none;
+      font-weight: bold;
+    }
+    
+    .loading {
+      display: inline-block;
+      width: 20px;
+      height: 20px;
+      border: 3px solid rgba(255, 255, 255, 0.3);
+      border-radius: 50%;
+      border-top-color: white;
+      animation: spin 1s ease-in-out infinite;
+      margin-right: 10px;
+    }
+    
+    @keyframes spin {
+      to { transform: rotate(360deg); }
+    }
+    
+    /* Animation classes */
+    .fade-in {
+      animation: fadeIn 0.5s ease-out;
+    }
+    
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(20px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    
+    .pulse {
+      animation: pulse 2s infinite;
+    }
+    
+    @keyframes pulse {
+      0% { box-shadow: 0 0 0 0 rgba(106, 17, 203, 0.4); }
+      70% { box-shadow: 0 0 0 15px rgba(106, 17, 203, 0); }
+      100% { box-shadow: 0 0 0 0 rgba(106, 17, 203, 0); }
+    }
+    
+    /* Responsive design */
+    @media (max-width: 576px) {
+      .card {
+        padding: 20px;
+      }
+      
+      h2 {
+        font-size: 20px;
+      }
+      
+      input, button {
+        padding: 12px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="card">
+      <div class="logo">
+        <h1>TikTok Downloader</h1>
+        <div class="brand">بواسطة ASKALT</div>
+      </div>
+      
+      <h2>📥 تحميل مقاطع تيك توك بدون علامة مائية</h2>
+      
+      <div class="input-group">
+        <input type="text" id="url" placeholder="الصق رابط فيديو تيك توك هنا..." />
+      </div>
+      
+      <button onclick="download()" class="pulse">
+        <i class="fas fa-download"></i> تحميل الفيديو
+      </button>
+      
+      <div class="result" id="result"></div>
+      
+      <div class="social-links">
+        <a href="#" class="facebook"><i class="fab fa-facebook-f"></i></a>
+        <a href="#" class="twitter"><i class="fab fa-twitter"></i></a>
+        <a href="#" class="instagram"><i class="fab fa-instagram"></i></a>
+        <a href="#" class="youtube"><i class="fab fa-youtube"></i></a>
+      </div>
+      
+      <div class="footer">
+        جميع الحقوق محفوظة &copy; <a href="#">ASKALT</a> 2023
+      </div>
+    </div>
+  </div>
+
+  <script>
+    async function download() {
+      const url = document.getElementById("url").value.trim();
+      const result = document.getElementById("result");
+
+      if (!url) {
+        result.innerHTML = `
+          <div class="result error fade-in">
+            <i class="fas fa-exclamation-circle"></i> الرجاء إدخال رابط فيديو تيك توك
+          </div>
+        `;
+        return;
+      }
+
+      result.innerHTML = `
+        <div class="result fade-in">
+          <span class="loading"></span> جاري معالجة طلبك...
+        </div>
+      `;
+
+      try {
+        const res = await fetch("https://tiktok-downloader-download-tiktok-videos-without-watermark.p.rapidapi.com/index?url=" + encodeURIComponent(url), {
+          method: "GET",
+          headers: {
+            "X-RapidAPI-Key": "792a0bf02amsh7e2be3af5c4ebdep1dd718jsn6a9821b97c97",
+            "X-RapidAPI-Host": "tiktok-downloader-download-tiktok-videos-without-watermark.p.rapidapi.com"
+          }
+        });
+
+        const data = await res.json();
+
+        if (data && data.video && data.video[0]) {
+          const cleanUrl = data.video[0];
+          result.innerHTML = `
+            <div class="result success fade-in">
+              <i class="fas fa-check-circle"></i> تم تحضير الفيديو بنجاح!
+              <br><br>
+              <a href="${cleanUrl}" class="download-btn" target="_blank">
+                <i class="fas fa-download"></i> تنزيل الفيديو الآن
+              </a>
+            </div>
+          `;
+        } else {
+          result.innerHTML = `
+            <div class="result error fade-in">
+              <i class="fas fa-times-circle"></i> لم نتمكن من تحميل الفيديو، الرجاء التأكد من الرابط
+            </div>
+          `;
+        }
+      } catch (e) {
+        console.error(e);
+        result.innerHTML = `
+          <div class="result error fade-in">
+            <i class="fas fa-exclamation-triangle"></i> حدث خطأ أثناء معالجة طلبك
+          </div>
+        `;
+      }
+    }
+    
+    // Allow pressing Enter key to submit
+    document.getElementById('url').addEventListener('keypress', function(e) {
+      if (e.key === 'Enter') {
+        download();
+      }
+    });
+  </script>
+</body>
+</html>
